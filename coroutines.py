@@ -45,24 +45,34 @@ async def climb_degree(start):
 
 
 async def distance4(start):
-    visited = set()
-    answer = set()
-    list_of_neighbours = await get_neighbours(start)
+    queue = []
+    dictionary = {start : 0}
 
-    async def visit(node, distance):
-        if node in answer and distance < 4:
-            answer.discard(node)
-            visited.discard(node)
-        if node not in visited:
-            visited.add(node)
-            if (distance == 4):
-                answer.add(node)
+    async def visit(node):
+        list_of_neighbours = await get_neighbours(node)
+        distance = dictionary.get(node)
+        for neigh in list_of_neighbours:
+            if dictionary[neigh] <= distance+1:
+                list_of_neighbours.discard(neigh)
             else:
-                list_of_neighbours = await get_neighbours(node)
+                queue.append(neigh)
+                dictionary[neigh] = dictionary+1
 
-    tasks = [visit(neigh, 1) for neigh in list_of_neighbours]
-    await asyncio.gather(*tasks)
+    queue.append(start)
+    while not queue.empty():
+        tmp = set()
+        while not queue.empty():
+            tmp.add(queue.pop(0))
+        tasks = [visit(node) for node in set]
+        await asyncio.gather(*tasks)
+
+
+    answer = set()
+    for key in dictionary:
+        if dictionary[key] == 4:
+            answer.add(key)
     return answer
+
 
 
 async def main():
