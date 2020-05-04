@@ -1,7 +1,5 @@
-import asyncio
 from urllib.parse  import urlparse, parse_qs
 from http.server  import BaseHTTPRequestHandler
-import requests
 
 
 def get_handler():
@@ -36,49 +34,3 @@ def get_handler():
             self._set_headers()
 
     return MyHandler
-
-
-def get_neighbours(node):
-    try:
-        neighbours = (requests.get(f'http://localhost:{node}').text.split(","))
-        return neighbours
-    except:
-        return []
-
-
-async def complete_neighbourhood(start):
-    list_of_neighbours = get_neighbours(start)
-
-    async def connect(node):
-        for neighbour in list_of_neighbours:
-            if (neighbour != node):
-                requests.get(f'http://localhost:{node}/new?port={neighbour}')
-
-    tasks = [asyncio.create_task(connect(node) for node in list_of_neighbours)]
-    await asyncio.gather(tasks)
-
-
-async def climb_degree(start):
-    list_of_neighbours = get_neighbours(start)
-    my_degree = len(list_of_neighbours)
-    degrees_of_neighbours = []
-
-    async def count_degree(node):
-        degrees_of_neighbours.append((node, get_neighbours(node)))
-
-    tasks = [asyncio.create_task(count_degree(node) for node in list_of_neighbours)]
-    await asyncio.gather(tasks)
-    degrees_of_neighbours = sorted(degrees_of_neighbours,  key=lambda tup:(-tup[1], tup[0]))
-
-    if my_degree > degrees_of_neighbours[0][1] or (my_degree == degrees_of_neighbours[0][1] and start < degrees_of_neighbours[0][0]):
-        return start
-    
-    return degrees_of_neighbours[0][0]
-
-
-async def distance4(start):
-    pass
-
-
-
-

@@ -1,5 +1,6 @@
 from http.server  import HTTPServer
-from node import get_handler, get_neighbours
+from node import get_handler
+from coroutines import *
 from threading import Thread
 import time
 import requests
@@ -21,9 +22,6 @@ def do_stuff(HOST, nodes, edges, condition_ready=None, condition_done=None):
             add(x,y)
             add(y, x)
 
-        a = get_neighbours(8031)
-        print(a)
-
         #This is here for you so you know when stuff is ready
         if condition_ready is not None:
             with condition_ready:
@@ -32,9 +30,9 @@ def do_stuff(HOST, nodes, edges, condition_ready=None, condition_done=None):
         if condition_done:
             with condition_done:
                 condition_done.wait()
-        else:
-            while True:
-                time.sleep(5)
+        #else:
+         #   while True:
+          #      time.sleep(5)
 
     except KeyboardInterrupt:
         pass
@@ -44,7 +42,6 @@ def do_stuff(HOST, nodes, edges, condition_ready=None, condition_done=None):
         server.server_close()
     for t in threads: t.join()
 
-
 if __name__=="__main__":
     HOST = "localhost"
     graph_base = 8030
@@ -52,5 +49,6 @@ if __name__=="__main__":
     graph = {(graph_base+x, graph_base+y) for x,y in graph}
     nodes = {x for y in graph for x in y}
     do_stuff(HOST, nodes, graph)
+
 
 
