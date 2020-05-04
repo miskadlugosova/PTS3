@@ -1,5 +1,5 @@
 from http.server  import HTTPServer
-from node import get_handler
+from node import get_handler, get_neighbours
 from threading import Thread
 import time
 import requests
@@ -20,7 +20,10 @@ def do_stuff(HOST, nodes, edges, condition_ready=None, condition_done=None):
         for x,y in edges:
             add(x,y)
             add(y, x)
-    
+
+        a = get_neighbours(8031)
+        print(a)
+
         #This is here for you so you know when stuff is ready
         if condition_ready is not None:
             with condition_ready:
@@ -49,4 +52,5 @@ if __name__=="__main__":
     graph = {(graph_base+x, graph_base+y) for x,y in graph}
     nodes = {x for y in graph for x in y}
     do_stuff(HOST, nodes, graph)
+
 
