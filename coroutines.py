@@ -26,14 +26,20 @@ async def complete_neighbourhood(start, host="http://localhost:"):
 
 async def climb_degree(start):
     list_of_neighbours = await get_neighbours(start)
+    print("climbing")
+    print (list_of_neighbours)
     my_degree = len(list_of_neighbours)
     degrees_of_neighbours = []
+
+    if my_degree == 0:
+        return start
 
     async def count_degree(node):
         degrees_of_neighbours.append((node, len(await get_neighbours(node))))
 
     tasks = [count_degree(node) for node in list_of_neighbours]
     await asyncio.gather(*tasks)
+
 
 
     degrees_of_neighbours = sorted(degrees_of_neighbours, key=lambda tup: (-tup[1], tup[0]))
@@ -76,7 +82,7 @@ async def distance4(start):
 
 
 async def main():
-    x = await climb_degree(8034)
+    x = await climb_degree(8037)
     print(x)
     await complete_neighbourhood(8031)
     y = await climb_degree(8034)
