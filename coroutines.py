@@ -4,32 +4,36 @@ import queue
 
 host = "http://localhost:"
 
+class Requester(object):
 
-async def get_neighbours(node):
-    try:
+    @staticmethod
+    async def get_neighbours(node):
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(host + str(node)) as resp:
+                    return list(str(await resp.text()).split(','))
+        except:
+            return []
+
+    @staticmethod
+    async def connect(node1, node2):
+
         async with aiohttp.ClientSession() as session:
-            async with session.get(host + str(node)) as resp:
-                return list(str(await resp.text()).split(','))
-    except:
-        return []
+            async with session.get(host + str(node1) + '/new', params={'port': str(node2)}) as resp:
+                print(await resp.text())
 
 
-async def connect(node1, node2):
-    async with aiohttp.ClientSession() as session:
-        async with session.get(host + str(node1) + '/new', params={'port': str(node2)}) as resp:
-            print(await resp.text())
-
-
-async def complete_neighbourhood(start):
-    list_of_neighbours = await get_neighbours(start)
+async def complete_neighbourhood(start, requester = Requester):
+    list_of_neighbours = await requester.get_neighbours(start)
     for first in list_of_neighbours:
         for second in list_of_neighbours:
             if first != second:
-                await connect(first, second)
+                await requester.connect(first, second)
 
 
-async def climb_degree(start):
-    list_of_neighbours = await get_neighbours(start)
+async def climb_degree(start, requester = Requester):
+    list_of_neighbours = await requester.get_neighbours(start)
     my_degree = len(list_of_neighbours)
     degrees_of_neighbours = []
 
@@ -37,7 +41,7 @@ async def climb_degree(start):
         return start
 
     async def count_degree(node):
-        degrees_of_neighbours.append((node, len(await get_neighbours(node))))
+        degrees_of_neighbours.append((node, len(await requester.get_neighbours(node))))
 
     tasks = []
     for node in list_of_neighbours:
@@ -54,19 +58,19 @@ async def climb_degree(start):
     return await climb_degree(degrees_of_neighbours[0][0])
 
 
-async def distance4(start):
+async def distance4(start, requester = Requester):
     q = queue.Queue()
-    dictionary = {str(start) : 0}
+    dictionary = {str(start): 0}
 
     async def visit(node):
-        list_of_neighbours = await get_neighbours(node)
+        list_of_neighbours = await requester.get_neighbours(node)
         distance = dictionary.get(node)
         for neigh in list_of_neighbours:
-            if neigh in dictionary.keys() and dictionary[neigh] <= distance+1:
+            if neigh in dictionary.keys() and dictionary[neigh] <= distance + 1:
                 pass
             elif distance < 4:
                 q.put(neigh)
-                dictionary[neigh] = distance+1
+                dictionary[neigh] = distance + 1
 
     q.put(str(start))
     while not q.empty():
