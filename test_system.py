@@ -7,7 +7,7 @@ from initialize_nodes import do_stuff
 from coroutines import climb_degree, complete_neighbourhood, distance4
 
 
-# climb noneixsting node, calculate distance from beginning in linear, complete graph, climb from the same node, calculate distance from beginning again
+# climb node, calculate distance from beginning in linear, complete graph, climb from the same node, calculate distance from beginning again
 class TestSystem(asynctest.TestCase):
     def setUp(self):
         HOST = "localhost"
@@ -25,11 +25,11 @@ class TestSystem(asynctest.TestCase):
         with self.condition_ready:
             self.condition_ready.wait()
         time.sleep(1)
-        self.assertEqual(await climb_degree(8034), 8031)
-        self.assertEqual(await distance4(8030), {'8034'})
-        await complete_neighbourhood(8034)
-        self.assertEqual(await climb_degree(8034), 8033)
-        self.assertEqual(await distance4(8030), set(8034, 8035))
+        self.assertEqual(await climb_degree('8034'), '8031')
+        self.assertEqual(await distance4('8030'), {'8034'})
+        await complete_neighbourhood('8034')
+        self.assertEqual(await climb_degree('8034'), '8033')
+        self.assertEqual(await distance4('8030'), {'8034', '8035'})
         with self.condition_done:
             self.condition_done.notify()
         self.server.join()
