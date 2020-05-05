@@ -1,7 +1,5 @@
 import unittest
-import asyncio
 import coroutines
-from asynctest import patch
 import asynctest
 from asynctest.mock import MagicMock
 
@@ -21,7 +19,6 @@ class ConnectNotNetwork(MagicMock):
     async def __call__(self, *args, **kwarg):
         global graph
         graph.add((args[0], args[1]))
-
 
 
 # opytam sa na susedov vrcholu x, zavolam complete na jeho suseda, opytam sa na susedov vrcholu x
