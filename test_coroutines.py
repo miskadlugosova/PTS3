@@ -1,4 +1,3 @@
-import unittest
 import coroutines
 import asynctest
 from asynctest.mock import MagicMock
@@ -63,4 +62,4 @@ class TestDistance4(asynctest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    asynctest.main()

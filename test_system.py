@@ -1,13 +1,10 @@
-import asyncio
 import threading
-import unittest
 import time
 import asynctest
 from initialize_nodes import do_stuff
 from coroutines import climb_degree, complete_neighbourhood, distance4
 
 
-# climb node, calculate distance from beginning in linear, complete graph, climb from the same node, calculate distance from beginning again
 class TestSystem(asynctest.TestCase):
     def setUp(self):
         HOST = "localhost"
@@ -20,7 +17,8 @@ class TestSystem(asynctest.TestCase):
         self.server = threading.Thread(target=do_stuff, args=(
             HOST, nodes, graph, self.condition_ready, self.condition_done,))
 
-    async def test_climb_distance_in_linear_graph_completing_and_after_climb_distance(self):
+    # climb node, calculate distance from beginning in linear, complete graph, climb from the same node, calculate distance from beginning again
+    async def test_system_coroutines_together(self):
         self.server.start()
         with self.condition_ready:
             self.condition_ready.wait()
@@ -36,4 +34,4 @@ class TestSystem(asynctest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    asynctest.main()
