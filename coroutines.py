@@ -22,10 +22,13 @@ async def connect(node1, node2):
 
 async def complete_neighbourhood(start):
     list_of_neighbours = await get_neighbours(start)
+    tasks = []
     for first in list_of_neighbours:
         for second in list_of_neighbours:
             if first != second:
-                await connect(first, second)
+                task = asyncio.create_task(connect(first, second))
+                tasks.append(task)
+    await asyncio.gather(*tasks)
 
 
 async def climb_degree(start):
@@ -81,26 +84,3 @@ async def distance4(start):
         if dictionary[key] == 4:
             answer.add(key)
     return answer
-
-
-async def main():
-    print("climbing 8037")
-    x = await climb_degree(8037)
-    print(x)
-    print("calculating distance4")
-    z = await distance4(8030)
-    print(z)
-    print("complete neigh")
-    await complete_neighbourhood(8034)
-    print("climbing 8034")
-    y = await climb_degree(8034)
-    print(y)
-    print("calculating distance4")
-    q = await distance4(8030)
-    print(q)
-    print("end")
-
-
-if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
