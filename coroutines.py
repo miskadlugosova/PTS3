@@ -76,7 +76,10 @@ async def distance4(start):
         tmp = set()
         while not q.empty():
             tmp.add(q.get())
-        tasks = [visit(node) for node in tmp]
+        tasks = []
+        for node in tmp:
+            task = asyncio.create_task(visit(node))
+            tasks.append(task)
         await asyncio.gather(*tasks)
 
     answer = set()
