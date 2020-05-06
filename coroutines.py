@@ -1,7 +1,6 @@
 import asyncio
 import aiohttp
 import queue
-
 host = "http://localhost:"
 
 
