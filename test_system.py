@@ -16,13 +16,12 @@ class TestSystem(asynctest.TestCase):
         self.condition_done = threading.Condition()
         self.server = threading.Thread(target=do_stuff, args=(
             HOST, nodes, graph, self.condition_ready, self.condition_done,))
-
-    # climb node, calculate distance from beginning in linear, complete graph, climb from the same node, calculate distance from beginning again
-    async def test_system_coroutines_together(self):
         self.server.start()
         with self.condition_ready:
             self.condition_ready.wait()
-        time.sleep(1)
+
+    # climb node, calculate distance from beginning in linear, complete graph, climb from the same node, calculate distance from beginning again
+    async def test_system_coroutines_together(self):
         self.assertEqual(await climb_degree('8034'), '8031')
         self.assertEqual(await distance4('8030'), {'8034'})
         await complete_neighbourhood('8034')
