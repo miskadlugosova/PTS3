@@ -1,8 +1,7 @@
 import threading
-import time
 import asynctest
 from initialize_nodes import do_stuff
-from coroutines import climb_degree, complete_neighbourhood, distance4
+from coroutines import climb_degree, complete_neighbourhood, distance4, get_neighbours
 
 
 class TestSystem(asynctest.TestCase):
@@ -20,11 +19,13 @@ class TestSystem(asynctest.TestCase):
         with self.condition_ready:
             self.condition_ready.wait()
 
-    # climb node, calculate distance from beginning in linear, complete graph, climb from the same node, calculate distance from beginning again
+    # climb node, calculate distance from beginning in linear, complete graph and check added edge, climb from the same node, calculate distance from beginning again
     async def test_system_coroutines_together(self):
         self.assertEqual(await climb_degree('8034'), '8031')
         self.assertEqual(await distance4('8030'), {'8034'})
         await complete_neighbourhood('8034')
+        result = await get_neighbours('8033')
+        self.assertEqual(sorted(result), ['8032','8034','8035'])
         self.assertEqual(await climb_degree('8034'), '8033')
         self.assertEqual(await distance4('8030'), {'8034', '8035'})
         with self.condition_done:
