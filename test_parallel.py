@@ -38,7 +38,7 @@ class TestCompleteNeighbourhoodParallel(asynctest.TestCase):
         t0 = time.time()
         await coroutines.complete_neighbourhood('1')
         t1 = time.time()
-        self.assertTrue(5.99 < (t1 - t0) < 6.01)             #if not parallel, result would be 9s
+        self.assertTrue(6 <= (t1 - t0) < 6.05)             #if not parallel, result would be at least 9s, minimum is 6 because i have at least 2 sleeps
 
 
 class TestClimbDegreeParallel(asynctest.TestCase):
@@ -52,7 +52,7 @@ class TestClimbDegreeParallel(asynctest.TestCase):
         t0 = time.time()
         await coroutines.climb_degree('1')
         t1 = time.time()
-        self.assertTrue(5.99 < (t1-t0) < 6.01)                         #if not parallel result would be 9s
+        self.assertTrue(6 <= (t1-t0) < 6.05)                         #if not parallel result would be at least 9s, minimum is 6 because i have at least 2 sleeps
 
 
 class TestDistance4Parallel(asynctest.TestCase):
@@ -66,7 +66,7 @@ class TestDistance4Parallel(asynctest.TestCase):
         t0 = time.time()
         await coroutines.distance4('0')
         t1 = time.time()
-        self.assertTrue(5.99 < (t1 - t0) < 6.01)                      #if not parallel result would be 12s
+        self.assertTrue(6 <= (t1 - t0) < 6.05)                      #if not parallel result would be at least 12s, minimum is 6 because i have at least 2 sleeps
 
 
 if __name__ == '__main__':
