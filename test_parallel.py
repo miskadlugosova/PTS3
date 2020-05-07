@@ -70,4 +70,4 @@ class TestDistance4Parallel(asynctest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    asynctest.main()
